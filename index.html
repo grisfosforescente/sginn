@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG INN - Soluciones Globales e Innovaciones</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Animaciones del Loader Antiguo (Eliminadas algunas, conservadas otras) */
+        @keyframes reveal-text { 0% { clip-path: inset(0 100% 0 0); opacity: 0; } 100% { clip-path: inset(0 0% 0 0); opacity: 1; } }
+        @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        .animate-reveal-text { animation: reveal-text 1.2s ease-in-out 1s both; }
+        .animate-blink { animation: blink 1.5s infinite 1.5s both; }
+        
+        /* Ocultar elementos */
+        .hidden-view { display: none !important; }
+        
+        /* Imagen con zoom lento */
+        .img-zoom-hover { transition: transform 20s ease; }
+        .group:hover .img-zoom-hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 overflow-hidden selection:bg-cyan-200 selection:text-cyan-900 h-screen w-screen flex flex-col md:flex-row">
+
+    <!-- LOADER CON VIDEO DE INTRO -->
+    <div id="loader" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-[100] transition-opacity duration-1000 ease-out">
+        <div class="relative w-full h-full max-w-5xl max-h-screen flex items-center justify-center bg-white">
+            <!-- Video de Intro Épico -->
+            <video id="intro-video" class="w-full h-full object-contain md:object-cover mix-blend-multiply" autoplay muted playsinline>
+                <source src="introblanco.mp4" type="video/mp4">
+                Tu navegador no soporta el formato de video.
+            </video>
+            
+            <!-- Texto inferior opcional (puedes quitarlo si el video ya lo tiene) -->
+            <div class="absolute bottom-10 left-0 right-0 text-center flex flex-col items-center pointer-events-none">
+                <div class="mt-8 flex items-center gap-2 text-sm font-semibold text-gray-400 tracking-widest uppercase animate-blink bg-white/80 px-4 py-2 rounded-full backdrop-blur-sm">
+                    <i data-lucide="activity" class="w-4 h-4 text-cyan-500"></i>
+                    Iniciando Sistemas...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGACIÓN LATERAL (Desktop) / SUPERIOR (Mobile) -->
+    <nav class="bg-white border-b md:border-b-0 md:border-r border-gray-200 md:w-72 flex-shrink-0 flex flex-col justify-between shadow-sm z-50">
+        <div class="p-6 md:p-8 flex justify-between items-center md:block">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 md:mb-12 cursor-pointer" onclick="changeTab('inicio')">
+                <div class="w-full h-auto bg-white rounded-xl flex items-center justify-center">
+                    <img src="508433b9-b550-4b72-a6ed-dc914a02984f.jpg" alt="SGI Soluciones Globales e Innovaciones" class="max-h-16 w-auto object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300">
+                </div>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden p-2 text-gray-600" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+                <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+            </button>
+
+            <!-- Enlaces Desktop -->
+            <div class="hidden md:flex flex-col space-y-2" id="desktop-nav">
+                <button onclick="changeTab('inicio')" class="nav-btn active-nav flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-cyan-50 text-cyan-700 shadow-sm" data-target="inicio">
+                    <i data-lucide="search" class="w-4 h-4"></i> Inicio
+                </button>
+                <button onclick="changeTab('nosotros')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-500 hover:bg-gray-50 hover:text-gray-900" data-target="nosotros">
+                    <i data-lucide="building" class="w-4 h-4"></i> Infraestructura
+                </button>
+                <button onclick="changeTab('servicios')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-500 hover:bg-gray-50 hover:text-gray-900" data-target="servicios">
+                    <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i> <span class="text-left leading-tight">Mantenimiento Preventivo y Correctivo</span>
+                </button>
+                <button onclick="changeTab('equipos')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-500 hover:bg-gray-50 hover:text-gray-900" data-target="equipos">
+                    <i data-lucide="activity" class="w-4 h-4"></i> Especialización
+                </button>
+                <button onclick="changeTab('venta')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-500 hover:bg-gray-50 hover:text-gray-900" data-target="venta">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i> Venta de Equipos
+                </button>
+                <button onclick="changeTab('ubicacion')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-500 hover:bg-gray-50 hover:text-gray-900" data-target="ubicacion">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> Contacto y Ubicación
+                </button>
+            </div>
+        </div>
+
+        <!-- Info Footer Sidebar Desktop -->
+        <div class="hidden md:block p-8 border-t border-gray-100 bg-gray-50/50">
+            <p class="text-xs text-gray-400 font-light mb-4">Atención a Nivel Nacional e Internacional.</p>
+            <button onclick="openWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-md">
+                <i data-lucide="phone" class="w-4 h-4"></i> WhatsApp Directo
+            </button>
+        </div>
+    </nav>
+
+    <!-- MENÚ MÓVIL (Dropdown) -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200 absolute top-[88px] left-0 w-full z-40 shadow-lg transition-all duration-300 origin-top transform scale-y-0 opacity-0">
+        <div class="flex flex-col p-4 space-y-2">
+            <button onclick="changeTab('inicio')" class="mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold bg-cyan-50 text-cyan-700" data-target="inicio">Inicio</button>
+            <button onclick="changeTab('nosotros')" class="mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold text-gray-600" data-target="nosotros">Infraestructura</button>
+            <button onclick="changeTab('servicios')" class="mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold text-gray-600 leading-tight" data-target="servicios">Mantenimiento Preventivo y Correctivo</button>
+            <button onclick="changeTab('equipos')" class="mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold text-gray-600" data-target="equipos">Especialización</button>
+            <button onclick="changeTab('venta')" class="mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold text-gray-600" data-target="venta">Venta de Equipos</button>
+            <button onclick="changeTab('ubicacion')" class="mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold text-gray-600" data-target="ubicacion">Contacto y Ubicación</button>
+            <div class="pt-4 pb-2">
+                <button onclick="openWhatsApp()" class="w-full bg-[#25D366] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2">
+                    <i data-lucide="phone" class="w-5 h-5"></i> WhatsApp Directo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+    <main class="flex-1 p-4 md:p-6 bg-gray-100 relative overflow-hidden h-full">
+        
+        <!-- VISTA: INICIO -->
+        <div id="view-inicio" class="view-section h-full view-anim-inicio">
+            <div class="flex flex-col h-full">
+                <div class="flex-1 relative rounded-3xl overflow-hidden bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 flex items-center group">
+                    <div class="absolute inset-0 z-0">
+                        <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Quirófano moderno" class="w-full h-full object-cover img-zoom-hover"/>
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent"></div>
+                    </div>
+                    <div class="relative z-10 p-8 md:p-16 max-w-3xl">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-50 border border-cyan-100 text-cyan-800 text-sm font-semibold mb-6 shadow-sm">
+                            <i data-lucide="activity" class="w-4 h-4"></i> Precisión Diagnóstica Continua
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-light text-gray-900 tracking-tight leading-tight mb-6">
+                            Mantenimiento a<br/>
+                            <strong class="font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600">Equipo Médico</strong>
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-10 font-light leading-relaxed max-w-xl">
+                            Soluciones Globales e Innovaciones. Especialistas en asegurar el funcionamiento ininterrumpido de tecnología clínica y de laboratorio desde 2001.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="openWhatsApp()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(8,145,178,0.2)] transition-all hover:translate-y-[-2px]">
+                                <i data-lucide="phone" class="w-5 h-5"></i> Asesoría Inmediata
+                            </button>
+                            <button onclick="changeTab('servicios')" class="bg-white hover:bg-gray-50 text-gray-800 border border-gray-200 px-8 py-4 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 transition-all hover:border-cyan-200 hover:shadow-sm">
+                                Ver Mantenimiento y Servicios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA: NOSOTROS -->
+        <div id="view-nosotros" class="view-section h-full bg-white rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 overflow-y-auto hidden-view">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-sm font-bold tracking-widest text-cyan-600 uppercase mb-3">Nuestra Esencia</h2>
+                <h3 class="text-4xl md:text-5xl font-black text-gray-900 mb-12 leading-tight">Sobre Nosotros</h3>
+                
+                <div class="grid lg:grid-cols-2 gap-12 mb-16">
+                    <div class="space-y-6 text-gray-600 font-light text-lg leading-relaxed">
+                        <p>Somos una empresa <strong class="font-semibold text-gray-900">fundada en el año 2001</strong>, creada con la misión de proveer servicios técnicos de alta calidad a empresas e instituciones relacionadas con la salud, buscando la excelencia en el servicio.</p>
+                        <p>Nuestros ingenieros cuentan con años de experiencia, garantizando no solo la reparación del equipo, sino también logrando una comunicación efectiva con los usuarios y administrativos de los gabinetes, clínicas u hospitales.</p>
+                        <div class="p-6 bg-cyan-50/50 border-l-4 border-cyan-600 rounded-r-2xl mt-8">
+                            <p class="text-gray-800 font-medium italic">"Nuestro compromiso es ofrecerle la mejor solución en servicio, diseñada a la medida de sus requerimientos y los de sus clientes, brindando la flexibilidad que su empresa necesite."</p>
+                        </div>
+                    </div>
+                    <div class="relative rounded-3xl overflow-hidden shadow-xl h-64 lg:h-auto">
+                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Laboratorio clínico" class="absolute inset-0 w-full h-full object-cover"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyan-900/40 to-transparent backdrop-blur-[1px]"></div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="p-3 bg-cyan-600 rounded-xl text-white shadow-md"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
+                            <h4 class="text-2xl font-bold text-gray-900">Misión</h4>
+                        </div>
+                        <div class="space-y-4 text-gray-600 font-light text-sm leading-relaxed">
+                            <p>SGI ofrece una serie de servicios integrales de reparación, mantenimiento y venta de equipo de imagenología, con el fin de optimizar el rendimiento y el buen uso de los equipos dentro de gabinetes, clínicas y hospitales, para lo cual trabajamos con objetivos y metas claras, que permitan generar calidad de vida a nuestros usuarios.</p>
+                            <ul class="space-y-2 mt-4">
+                                <li class="flex gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyan-500 shrink-0 mt-1"></i><span>Superamos nuestros niveles de productividad y excelencia en cada una de las etapas del negocio.</span></li>
+                                <li class="flex gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyan-500 shrink-0 mt-1"></i><span>Fomentamos un trato interpersonal cordial, atento, amistoso y respetuoso...</span></li>
+                                <li class="flex gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyan-500 shrink-0 mt-1"></i><span>Contamos con personas altamente calificadas, responsables, que se encuentran a gusto...</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 hover:shadow-lg transition-shadow h-full">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="p-3 bg-blue-600 rounded-xl text-white shadow-md"><i data-lucide="search" class="w-6 h-6"></i></div>
+                                <h4 class="text-2xl font-bold text-gray-900">Visión</h4>
+                            </div>
+                            <p class="text-gray-600 font-light text-sm leading-relaxed">En el año 2025 será reconocida como una empresa prestadora de servicios globales para equipos de imagenología en reparación, rendimiento, mantenimiento y todo lo relacionado con el ámbito de equipos innovadores del sector salud, en todo el territorio nacional, adquiriendo un compromiso con la calidad, competitividad y el desarrollo socioeconómico del país.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-900 to-cyan-900 rounded-3xl p-8 md:p-10 text-center text-white shadow-xl">
+                    <h4 class="text-xl font-bold mb-8 opacity-90 tracking-widest uppercase text-cyan-400">Nuestros Valores Nucleares</h4>
+                    <div class="flex flex-wrap justify-center gap-4 md:gap-8">
+                        <span class="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full font-semibold text-lg">Excelencia</span>
+                        <span class="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full font-semibold text-lg">Escucha</span>
+                        <span class="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full font-semibold text-lg">Transparencia</span>
+                        <span class="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full font-semibold text-lg">Resolución</span>
+                        <span class="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full font-semibold text-lg">Lealtad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA: SERVICIOS -->
+        <div id="view-servicios" class="view-section h-full bg-white rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 overflow-y-auto hidden-view">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                    <div class="p-4 bg-cyan-600 rounded-2xl text-white shadow-md shrink-0 w-fit">
+                        <i data-lucide="wrench" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight">Mantenimiento Preventivo y Correctivo a Equipo Médico y de Laboratorio</h2>
+                </div>
+                
+                <p class="text-gray-600 mb-10 text-lg font-light leading-relaxed max-w-4xl">
+                    Contamos con la experiencia, herramientas y el personal altamente capacitado para garantizar la precisión y el tiempo de actividad óptimo de su tecnología médica crítica. Intervenimos antes de que ocurran fallas y reparamos con urgencia cuando es necesario.
+                </p>
+                
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Los principales servicios que ofrecemos son:</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="services-grid">
+                    <!-- Cards de servicios generadas desde JS para mantener limpieza de HTML -->
+                </div>
+                
+                <div class="mt-12 bg-cyan-50 border border-cyan-100 rounded-2xl p-8 text-center flex flex-col items-center">
+                    <i data-lucide="wrench" class="w-10 h-10 text-cyan-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">¿Requiere un servicio específico?</h3>
+                    <p class="text-cyan-800 mb-6 font-light">Nuestros ingenieros están listos para analizar su caso sin compromiso.</p>
+                    <button onclick="openWhatsApp()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-md hover:shadow-lg">
+                        Consultar con un Ingeniero
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA: EQUIPOS -->
+        <div id="view-equipos" class="view-section h-full bg-slate-50 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-200 flex flex-col hidden-view">
+            <div class="bg-white p-8 border-b border-gray-200 flex-shrink-0">
+                <h2 class="text-3xl font-black text-gray-900 mb-2">Especialización Tecnológica</h2>
+                <p class="text-gray-500 font-light">Contamos con ingenieros con experiencia en tomografía y los siguientes modelos destacados:</p>
+            </div>
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto" id="equipos-grid">
+                    <!-- Cards de equipos generadas desde JS -->
+                </div>
+                
+                <div class="max-w-6xl mx-auto mt-8 bg-blue-900 rounded-2xl p-8 text-center flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
+                    <div class="text-left">
+                        <h3 class="text-xl font-bold text-white mb-2">¿No ve su equipo en la lista?</h3>
+                        <p class="text-blue-200 font-light">Nuestra cobertura nacional e internacional nos permite adaptarnos a múltiples tecnologías.</p>
+                    </div>
+                    <button onclick="openWhatsApp()" class="bg-white text-blue-900 hover:bg-gray-100 px-6 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 whitespace-nowrap">
+                        <i data-lucide="phone" class="w-5 h-5"></i> Consúltenos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA: VENTA DE EQUIPOS -->
+        <div id="view-venta" class="view-section h-full bg-white rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 overflow-y-auto hidden-view">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="p-3 bg-cyan-100 rounded-xl text-cyan-700">
+                        <i data-lucide="shopping-cart" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-4xl font-black text-gray-900">Venta de Equipo Médico</h2>
+                </div>
+                <p class="text-gray-500 mb-10 text-lg font-light">Equipos reacondicionados de alta tecnología, garantizados y listos para operar. Ofrecemos instalación y capacitación.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8" id="venta-grid">
+                    <!-- Cards generadas por JS -->
+                </div>
+
+                <div class="mt-12 bg-gray-50 border border-gray-200 rounded-2xl p-8 text-center">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">¿Busca un equipo específico que no está en la lista?</h3>
+                    <p class="text-gray-600 mb-6 font-light">Nuestra red de proveedores nos permite localizar tecnología a medida de su presupuesto y necesidades clínicas.</p>
+                    <button onclick="window.open('https://wa.me/525556034447?text=' + encodeURIComponent('Hola SG INN, busco un equipo médico específico para compra. ¿Podrían asesorarme?'), '_blank')" class="bg-gray-800 hover:bg-black text-white px-8 py-3 rounded-xl font-bold transition-all shadow-md inline-flex items-center gap-2">
+                        <i data-lucide="search" class="w-5 h-5"></i> Cotizar Búsqueda de Equipo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA: UBICACIÓN Y CONTACTO -->
+        <div id="view-ubicacion" class="view-section h-full bg-white rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 overflow-y-auto hidden-view flex flex-col">
+            <div class="max-w-6xl mx-auto w-full flex-1">
+                
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="p-3 bg-cyan-100 rounded-xl text-cyan-700">
+                        <i data-lucide="map-pin" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-4xl font-black text-gray-900">Contacto y Ubicación</h2>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 h-full">
+                    
+                    <!-- Columna Izquierda: Tarjetas de Contacto -->
+                    <div class="flex flex-col gap-6">
+                        <p class="text-gray-500 font-light text-lg mb-2">Estamos listos para atender sus requerimientos técnicos. Contáctenos directamente o visítenos en nuestras instalaciones.</p>
+                        
+                        <!-- Tarjeta WhatsApp (Principal) -->
+                        <button onclick="openWhatsApp()" class="group bg-gradient-to-br from-[#25D366] to-[#1DA851] p-6 rounded-3xl text-white shadow-[0_10px_20px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_30px_rgba(37,211,102,0.4)] transition-all transform hover:-translate-y-1 text-left flex items-center justify-between">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-1">Asesoría por WhatsApp</h3>
+                                <p class="text-green-100 font-light">Cotizaciones y contacto inmediato</p>
+                            </div>
+                            <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="message-circle" class="w-7 h-7 text-white fill-white/20"></i>
+                            </div>
+                        </button>
+
+                        <!-- Líneas telefónicas -->
+                        <div class="bg-gray-50 border border-gray-200 p-6 md:p-8 rounded-3xl shadow-sm hover:border-cyan-200 transition-colors">
+                            <h3 class="text-sm font-bold tracking-widest text-cyan-700 uppercase mb-5">Líneas de Atención</h3>
+                            <div class="flex flex-col gap-5">
+                                <a href="tel:5556034447" class="flex items-center gap-5 group">
+                                    <div class="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center group-hover:bg-cyan-600 group-hover:border-cyan-600 transition-colors shadow-sm">
+                                        <i data-lucide="phone" class="w-5 h-5 text-gray-600 group-hover:text-white transition-colors"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-900 font-bold text-lg group-hover:text-cyan-600 transition-colors">55 5603 4447</p>
+                                        <p class="text-sm text-gray-500 font-light">Línea Principal</p>
+                                    </div>
+                                </a>
+                                <div class="w-full h-px bg-gray-200"></div>
+                                <a href="tel:5634966101" class="flex items-center gap-5 group">
+                                    <div class="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center group-hover:bg-cyan-600 group-hover:border-cyan-600 transition-colors shadow-sm">
+                                        <i data-lucide="phone" class="w-5 h-5 text-gray-600 group-hover:text-white transition-colors"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-900 font-bold text-lg group-hover:text-cyan-600 transition-colors">56 3496 6101</p>
+                                        <p class="text-sm text-gray-500 font-light">Línea Alterna</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Correo -->
+                        <a href="mailto:ventas@sg-inn.com" class="bg-blue-50 border border-blue-100 p-6 rounded-3xl hover:bg-blue-100 transition-all flex items-center gap-5 group hover:-translate-y-1">
+                            <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform shrink-0">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">Correo Electrónico</h3>
+                                <p class="text-blue-700 font-light">ventas@sg-inn.com</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Columna Derecha: Mapa -->
+                    <div class="flex flex-col h-full min-h-[400px]">
+                        <div class="bg-gray-900 border border-gray-900 rounded-t-3xl p-6 md:p-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between text-white shadow-lg z-10 relative">
+                            <div>
+                                <h3 class="font-bold text-white text-xl flex items-center gap-2 mb-2">
+                                    <i data-lucide="building-2" class="text-cyan-400 w-6 h-6"></i> Sede Principal
+                                </h3>
+                                <p class="text-gray-300 text-sm font-light">Calle 15 de enero 1876</p>
+                                <p class="text-gray-300 text-sm font-light">Col. San Lorenzo la Cebada, Xochimilco, CDMX. CP 16035</p>
+                            </div>
+                            <button onclick="window.open(GOOGLE_MAPS_URL, '_blank')" class="bg-cyan-600 hover:bg-cyan-500 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-md shrink-0 text-sm whitespace-nowrap">
+                                Abrir en Maps <i data-lucide="external-link" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex-1 bg-slate-100 rounded-b-3xl border-x border-b border-gray-200 overflow-hidden relative -mt-4 pt-4 min-h-[300px]">
+                            <!-- Mapa Integrado Interactivo (Iframe de Google Maps) -->
+                            <iframe 
+                                src="https://maps.google.com/maps?q=Calle%2015%20de%20enero%201876,%20San%20Lorenzo%20la%20Cebada,%20Xochimilco,%2016035%20Ciudad%20de%20M%C3%A9xico,%20CDMX&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                                class="absolute inset-0 w-full h-full border-0 mt-4" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- COPYRIGHT MINIMALISTA -->
+    <div class="hidden md:block absolute bottom-4 left-72 ml-8 text-[10px] text-gray-400 z-10 pointer-events-none">
+        © 2026 SG INN. Todos los derechos reservados.<br/>
+        Prohibida la reproducción. Col. San Lorenzo La Cebada, CDMX.
+    </div>
+
+    <script>
+        // --- CONSTANTES ---
+        const WHATSAPP_NUMBER = "525556034447"; 
+        const WHATSAPP_MESSAGE = "Hola SG INN, solicito información sobre mantenimiento de equipo médico.";
+        const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+        const GOOGLE_MAPS_URL = "https://maps.app.goo.gl/GdMVo7mA9nVPDQZr8";
+
+        // --- DATOS ---
+        const servicesList = [
+            { title: "Mantenimiento Preventivo", icon: "shield-check" },
+            { title: "Mantenimiento Correctivo", icon: "wrench" },
+            { title: "Reprocesamiento Tubos RX", icon: "zap" },
+            { title: "Tanques de Alto Voltaje", icon: "zap" },
+            { title: "Guías Mecánicas", icon: "building" },
+            { title: "Adecuaciones Obra Civil", icon: "building" },
+            { title: "Recepción de Equipo", icon: "truck" },
+            { title: "Maniobras y Transporte", icon: "truck" },
+            { title: "Instalación Mecánica", icon: "settings" },
+            { title: "Instalación Electrónica", icon: "settings" },
+            { title: "Puesta en Marcha", icon: "activity" }
+        ];
+
+        const equipmentCategories = [
+            { name: "Tomógrafos", models: ["Serie Hispeed", "Serie Lightspeed", "Serie Brightspeed", "Serie Brivo", "Serie Optima", "Serie Revolution", "Serie Discovery"], image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "Resonancia Magnética", models: ["Serie Signa (Artist, Hero, Pioneer, Premier, Prime, Voyager, HD, HDX, HDE, HDI, Excite, Vibrant, Twinspeed, Ovation, Profile)", "Serie Optima (MR450W, MR750W)", "Serie Discovery (MR450, MR750)"], image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "Hemodinamia", models: ["Innova", "Optima", "Discovery"], image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "Mastografía", models: ["Senographe essential", "Senograph", "Senographe 800T, 700T", "Senograph 2000D"], image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "Salas de Rayos X", models: ["Definium", "Discovery", "Optima", "Proteus", "Revolution", "Siluet", "XR6000", "Brivo"], image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+            { name: "Fluoroscopia & Densitómetros", models: ["Rayos X y Fluoroscopia: Optima, Precision, Advantx HF-Legacy", "Densitómetros: Serie Lunar (iDXA, Prodigy, Aria)"], image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
+        ];
+
+        const equiposVenta = [
+            {
+                titulo: "Tomógrafo GE Optima CT660",
+                descripcion: "Tomógrafo computarizado de 64 cortes, reacondicionado. Ideal para una amplia gama de aplicaciones clínicas incluyendo cardio, angio y neuro. Excelente calidad de imagen a dosis bajas.",
+                caracteristicas: ["64 Cortes", "Software versión V12", "Tubo renovado en 2023", "Garantía de 6 meses"],
+                precio: "Cotización a medida",
+                imagen: "https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                titulo: "Mastógrafo GE Senographe Essential",
+                descripcion: "Sistema de mastografía digital de campo completo. Ofrece un flujo de trabajo rápido y gran ergonomía para las pacientes. Reacondicionado a estándares de fábrica.",
+                caracteristicas: ["Detector digital premium", "Consola de adquisición intuitiva", "Mampara de protección", "Instalación incluida"],
+                precio: "Cotización a medida",
+                imagen: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                titulo: "Arco en C GE OEC 9900 Elite",
+                descripcion: "Sistema fluoroscópico móvil avanzado. Perfecto para ortopedia, cirugía general y vascular periférico. Pantallas duales de alta resolución.",
+                caracteristicas: ["Intensificador de 9 pulgadas", "Monitores planos", "Almacenamiento extendido de imágenes", "Mantenimiento al día"],
+                precio: "Cotización a medida",
+                imagen: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                titulo: "Densitómetro Lunar Prodigy",
+                descripcion: "Sistema DEXA para análisis de composición corporal y densidad ósea. Altamente confiable y con tiempos de escaneo rápidos.",
+                caracteristicas: ["Haz de abanico (Fan Beam)", "Software de reporte avanzado", "Mesa estándar", "Calibración certificada"],
+                precio: "Cotización a medida",
+                imagen: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            }
+        ];
+
+        // --- RENDERIZADO DE DATOS HTML ---
+        function renderData() {
+            const servicesContainer = document.getElementById('services-grid');
+            servicesList.forEach(service => {
+                servicesContainer.innerHTML += `
+                    <div class="group p-5 rounded-2xl border border-gray-100 hover:border-cyan-200 bg-gray-50/50 hover:bg-white transition-all hover:shadow-[0_10px_20px_rgba(0,0,0,0.04)] cursor-default flex flex-col justify-between">
+                        <div class="mb-4 p-3 bg-white rounded-xl shadow-sm inline-block w-fit group-hover:scale-110 transition-transform">
+                            <i data-lucide="${service.icon}" class="w-6 h-6 text-cyan-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-sm leading-tight">${service.title}</h3>
+                    </div>
+                `;
+            });
+
+            const equiposContainer = document.getElementById('equipos-grid');
+            equipmentCategories.forEach(cat => {
+                let modelsHtml = cat.models.map(model => `
+                    <li class="text-sm text-gray-600 flex items-start gap-2 font-light">
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-cyan-500 mt-0.5 shrink-0"></i>
+                        <span>${model}</span>
+                    </li>
+                `).join('');
+
+                equiposContainer.innerHTML += `
+                    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm group">
+                        <div class="h-32 overflow-hidden relative">
+                            <img src="${cat.image}" alt="${cat.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+                            <h3 class="absolute bottom-4 left-4 text-white font-bold text-xl">${cat.name}</h3>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-2">${modelsHtml}</ul>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const ventaContainer = document.getElementById('venta-grid');
+            equiposVenta.forEach(equipo => {
+                let caracteristicasHtml = equipo.caracteristicas.map(car => `
+                    <li class="text-sm text-gray-600 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> ${car}</li>
+                `).join('');
+
+                ventaContainer.innerHTML += `
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col">
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="${equipo.imagen}" alt="${equipo.titulo}" class="w-full h-full object-cover" />
+                            <div class="absolute top-4 right-4 bg-cyan-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                                Reacondicionado
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">${equipo.titulo}</h3>
+                            <p class="text-gray-600 font-light text-sm mb-4 leading-relaxed line-clamp-3">${equipo.descripcion}</p>
+                            <ul class="mb-6 space-y-1">
+                                ${caracteristicasHtml}
+                            </ul>
+                            <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                                <span class="font-black text-gray-800">${equipo.precio}</span>
+                                <button onclick="window.open('https://wa.me/525556034447?text=' + encodeURIComponent('Hola SG INN, me interesa cotizar el equipo: ${equipo.titulo}'), '_blank')" class="bg-cyan-50 hover:bg-cyan-100 text-cyan-700 px-4 py-2 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2">
+                                    <i data-lucide="shopping-bag" class="w-4 h-4"></i> Info
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- LOGICA DE INTERFAZ ---
+        let isMobileMenuOpen = false;
+
+        function openWhatsApp() {
+            window.open(WHATSAPP_URL, '_blank');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const closeIcon = document.getElementById('close-icon');
+            
+            isMobileMenuOpen = !isMobileMenuOpen;
+            
+            if (isMobileMenuOpen) {
+                menu.classList.remove('hidden');
+                // Pequeño delay para la animación css
+                setTimeout(() => {
+                    menu.classList.remove('scale-y-0', 'opacity-0');
+                    menu.classList.add('scale-y-100', 'opacity-100');
+                }, 10);
+                menuIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+            } else {
+                menu.classList.remove('scale-y-100', 'opacity-100');
+                menu.classList.add('scale-y-0', 'opacity-0');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        }
+
+        function changeTab(targetTab) {
+            // Ocultar todas las vistas
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden-view'));
+            
+            // Remover estado activo de botones
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-500 hover:bg-gray-50 hover:text-gray-900";
+            });
+            document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                btn.className = "mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold text-gray-600";
+            });
+
+            // Mostrar vista objetivo y reiniciar su animación
+            const view = document.getElementById(`view-${targetTab}`);
+            view.classList.remove('hidden-view');
+            
+            // Truco para reiniciar animación CSS
+            view.style.animation = 'none';
+            view.offsetHeight; /* trigger reflow */
+            view.style.animation = null; 
+
+            // Activar botones correspondientes
+            document.querySelectorAll(`.nav-btn[data-target="${targetTab}"]`).forEach(btn => {
+                btn.className = "nav-btn active-nav flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-cyan-50 text-cyan-700 shadow-sm";
+            });
+            document.querySelectorAll(`.mobile-nav-btn[data-target="${targetTab}"]`).forEach(btn => {
+                btn.className = "mobile-nav-btn text-left px-4 py-3 rounded-lg font-semibold bg-cyan-50 text-cyan-700";
+            });
+
+            // Cerrar menú móvil si está abierto
+            if(isMobileMenuOpen) toggleMobileMenu();
+        }
+
+        // --- INICIALIZACIÓN ---
+        window.onload = function() {
+            renderData();
+            
+            // Inicializar Iconos Lucide
+            lucide.createIcons();
+
+            // Lógica del Loader con Video
+            const loader = document.getElementById('loader');
+            const introVideo = document.getElementById('intro-video');
+
+            // Función para ocultar el loader y mostrar la app
+            const hideLoader = () => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 1000); // Esperar a que termine la transición de opacidad
+            };
+
+            // Intentar reproducir el video
+            let playPromise = introVideo.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // El video inició correctamente.
+                    // Ocultamos el loader cuando el video termine.
+                    introVideo.onended = hideLoader;
+                    
+                    // Respaldo de seguridad: si por alguna razón el evento 'ended' no se dispara,
+                    // forzamos el cierre del loader después de un tiempo máximo (ej. 10 segundos).
+                    // Ajusta los 10000ms a la duración real de tu video + un margen.
+                    setTimeout(hideLoader, 10000); 
+                })
+                .catch(error => {
+                    // La reproducción automática fue bloqueada o hubo un error.
+                    console.log("Auto-play prevented or error loading video:", error);
+                    // Ocultamos el loader rápidamente para no bloquear al usuario.
+                    setTimeout(hideLoader, 1500);
+                });
+            } else {
+                // Navegadores muy antiguos donde play() no devuelve una promesa
+                introVideo.onended = hideLoader;
+                setTimeout(hideLoader, 8000); 
+            }
+        };
+    </script>
+</body>
+</html>
